@@ -1,1 +1,5 @@
 /target
+
+# Persistence
+/data
+*.db*

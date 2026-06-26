@@ -2,7 +2,11 @@ use clap::Subcommand;
 use rusqlite::Connection;
 use std::result::Result;
 
-use crate::{cli::Cli, persistence::bookshelf, persistence::tbr};
+use crate::{
+    cli::Cli,
+    persistence::{bookshelf, tbr},
+    utils::print_tbr_table,
+};
 
 #[derive(Subcommand)]
 pub enum TopLevelCommands {
@@ -84,7 +88,10 @@ pub fn execute_cmd(
             BookshelfCommands::Remove { title } => bookshelf::delete_book(db_connection, title)?,
         },
         TopLevelCommands::TBR { action } => match action {
-            TBRCommands::List {} => tbr::list_all_in_tbr(db_connection)?,
+            TBRCommands::List {} => {
+                let tbr_table = tbr::list_all_in_tbr(db_connection)?;
+                print_tbr_table(&tbr_table);
+            }
             TBRCommands::Add {
                 title,
                 author,

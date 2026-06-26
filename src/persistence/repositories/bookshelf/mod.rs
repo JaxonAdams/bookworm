@@ -1,7 +1,7 @@
-mod create;
-mod delete;
+mod add_book;
+mod delete_book;
 mod query;
 
-pub use create::create_book;
-pub use delete::delete_book;
+pub use add_book::add_book;
+pub use delete_book::delete_book;
 pub use query::list_all_books;

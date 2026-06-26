@@ -4,7 +4,7 @@ use std::result::Result;
 
 use crate::{
     cli::Cli,
-    persistence::{create_book, delete_book, list_all_books},
+    persistence::{add_book, delete_book, list_all_books},
 };
 
 #[derive(Subcommand)]
@@ -54,7 +54,7 @@ pub fn execute_cmd(
                 title,
                 author,
                 num_pages,
-            } => create_book(db_connection, title, author, num_pages)?,
+            } => add_book(db_connection, title, author, num_pages)?,
             BookshelfCommands::Remove { title } => delete_book(db_connection, title)?,
         },
     }

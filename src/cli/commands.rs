@@ -4,7 +4,7 @@ use std::result::Result;
 
 use crate::{
     cli::Cli,
-    persistence::{add_book, delete_book, list_all_books},
+    persistence::bookshelf::{add_book, delete_book, list_all_books},
 };
 
 #[derive(Subcommand)]

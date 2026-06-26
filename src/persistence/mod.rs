@@ -5,3 +5,4 @@ mod repositories;
 pub use connect::init_db;
 pub use errors::DatabaseError;
 pub use repositories::bookshelf;
+pub use repositories::tbr;

@@ -2,4 +2,4 @@ mod connect;
 mod repositories;
 
 pub use connect::init_db;
-pub use repositories::create_book;
+pub use repositories::{create_book, list_all_books};

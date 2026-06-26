@@ -9,7 +9,7 @@ pub fn init_db() -> Result<Connection> {
 
     let connection = Connection::open(db_path)?;
 
-    // TODO: create the table / ensure it exists
+    set_up_tables(&connection)?;
 
     println!("Database initialized successfully!");
     Ok(connection)
@@ -37,4 +37,18 @@ fn get_db_path() -> PathBuf {
 
     // FALLBACK
     PathBuf::from(storage_file_name)
+}
+
+/// Creates the needed tables if they don't exist
+fn set_up_tables(connection: &Connection) -> Result<()> {
+    connection.execute(
+        "CREATE TABLE IF NOT EXISTS books (
+            id        INTEGER PRIMARY KEY,
+            title     TEXT NOT NULL,
+            author    TEXT NOT NULL,
+            num_pages INTEGER NOT NULL
+        )",
+        [],
+    )?;
+    Ok(())
 }

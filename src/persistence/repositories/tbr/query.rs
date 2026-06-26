@@ -1,24 +1,31 @@
-use crate::{model::Book, utils::print_books_table};
+use crate::{
+    model::{Book, TBREntry},
+    utils::print_tbr_table,
+};
 use rusqlite::{Connection, Result};
 
 pub fn list_all_in_tbr(connection: &Connection) -> Result<()> {
     let mut stmt = connection.prepare(
-        "SELECT b.id, b.title, b.author, b.num_pages 
+        "SELECT tbr.id, tbr.created_at, b.id, b.title, b.author, b.num_pages 
          FROM tbr
          LEFT JOIN books b ON b.id = tbr.book_id",
     )?;
 
-    let book_iter = stmt.query_map([], |row| {
-        Ok(Book {
+    let tbr_iter = stmt.query_map([], |row| {
+        Ok(TBREntry {
             id: row.get(0)?,
-            title: row.get(1)?,
-            author: row.get(2)?,
-            num_pages: row.get::<_, i32>(3)?,
+            created_at: row.get(1)?,
+            book: Book {
+                id: row.get(2)?,
+                title: row.get(3)?,
+                author: row.get(4)?,
+                num_pages: row.get::<_, i32>(5)?,
+            },
         })
     })?;
 
-    let books: Vec<Book> = book_iter.collect::<Result<Vec<_>, _>>()?;
-    print_books_table(&books);
+    let tbr: Vec<TBREntry> = tbr_iter.collect::<Result<Vec<_>, _>>()?;
+    print_tbr_table(&tbr);
 
     Ok(())
 }

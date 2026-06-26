@@ -42,7 +42,7 @@ fn get_db_path() -> PathBuf {
 /// Creates the needed tables if they don't exist
 fn set_up_tables(connection: &Connection) -> Result<()> {
     connection.execute(
-        "CREATE TABLE IF NOT EXISTS books (
+        "CREATE TABLE IF NOT EXISTS bookshelf (
             id        INTEGER PRIMARY KEY,
             title     TEXT NOT NULL,
             author    TEXT NOT NULL,

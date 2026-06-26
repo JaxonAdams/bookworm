@@ -6,7 +6,8 @@ use crate::{persistence::DatabaseError, utils::log_debug};
 pub fn delete_book(connection: &Connection, title: &str) -> Result<(), DatabaseError> {
     log_debug(format!("Deleting book with title: '{}'", title).as_str());
 
-    let rows_affected = connection.execute("DELETE FROM books WHERE title = ?1", params![title])?;
+    let rows_affected =
+        connection.execute("DELETE FROM bookshelf WHERE title = ?1", params![title])?;
 
     if rows_affected == 0 {
         return Err(DatabaseError::BookNotFound(title.to_string()));
@@ -25,7 +26,7 @@ mod tests {
     fn test_delete_existing_book_succeeds() {
         let conn = setup_test_db();
         conn.execute(
-            "INSERT INTO books (title, author, num_pages) VALUES (?1, ?2, ?3)",
+            "INSERT INTO bookshelf (title, author, num_pages) VALUES (?1, ?2, ?3)",
             params!["Dune", "Frank Herbert", 412],
         )
         .unwrap();

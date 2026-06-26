@@ -4,7 +4,7 @@ use crate::utils::log_debug;
 
 pub fn add_book(connection: &Connection, title: &str, author: &str, num_pages: &i32) -> Result<()> {
     connection.execute(
-        "INSERT INTO books (title, author, num_pages)
+        "INSERT INTO bookshelf (title, author, num_pages)
             VALUES (?1, ?2, ?3)
             ON CONFLICT(title, author)
             DO UPDATE SET num_pages = excluded.num_pages;

@@ -4,8 +4,8 @@ use crate::utils::log_debug;
 
 pub fn create_book(
     connection: &Connection,
-    title: &String,
-    author: &String,
+    title: &str,
+    author: &str,
     num_pages: &i32,
 ) -> Result<()> {
     connection.execute(

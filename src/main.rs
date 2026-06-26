@@ -1,5 +1,5 @@
 use clap::Parser;
-use rusqlite::Result;
+use std::result::Result;
 
 mod cli;
 mod config;
@@ -11,7 +11,7 @@ use cli::{Cli, execute_cmd};
 use persistence::init_db;
 use utils::set_verbose;
 
-fn main() -> Result<()> {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
     set_verbose(cli.verbose);
 

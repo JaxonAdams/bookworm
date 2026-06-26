@@ -1,7 +1,8 @@
 use clap::{Parser, Subcommand};
-use rusqlite::{Connection, Result};
+use rusqlite::Connection;
+use std::result::Result;
 
-use crate::persistence::{create_book, list_all_books};
+use crate::persistence::{create_book, delete_book, list_all_books};
 
 /// Bookworm! A tool by readers, for readers!
 #[derive(Parser)]
@@ -43,9 +44,18 @@ pub enum BookCommands {
         #[arg(short, long)]
         num_pages: i32,
     },
+
+    /// Remove a book
+    Remove {
+        /// The title of the book
+        title: String,
+    },
 }
 
-pub fn execute_cmd(cli: &Cli, db_connection: &Connection) -> Result<()> {
+pub fn execute_cmd(
+    cli: &Cli,
+    db_connection: &Connection,
+) -> Result<(), Box<dyn std::error::Error>> {
     match &cli.command {
         TopLevelCommands::Book { action } => match action {
             BookCommands::List {} => list_all_books(db_connection)?,
@@ -54,6 +64,7 @@ pub fn execute_cmd(cli: &Cli, db_connection: &Connection) -> Result<()> {
                 author,
                 num_pages,
             } => create_book(db_connection, title, author, num_pages)?,
+            BookCommands::Remove { title } => delete_book(db_connection, title)?,
         },
     }
 

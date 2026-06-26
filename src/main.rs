@@ -1,37 +1,41 @@
 use comfy_table::modifiers::UTF8_ROUND_CORNERS;
 use comfy_table::presets::UTF8_FULL;
 use comfy_table::{Attribute, Cell, Color, Row, Table};
-use rusqlite::{Result, params};
+use rusqlite::Result;
 
 mod config;
 mod model;
 mod persistence;
 
 use model::Book;
-use persistence::init_db;
+use persistence::{create_book, init_db};
 
 fn main() -> Result<()> {
     println!("Hello, world!");
 
-    let test_book = Book {
-        id: 1,
-        title: String::from("Les Miserables"),
-        author: String::from("Victor Hugo"),
-        num_pages: 1218,
-    };
-
     let connection = init_db().unwrap();
 
-    // FOR TESTING: insert test book
-    connection.execute(
-        "INSERT INTO books (title, author, num_pages)
-            VALUES (?1, ?2, ?3)
-            ON CONFLICT(title, author)
-            DO UPDATE SET num_pages = excluded.num_pages;
-        ",
-        params![test_book.title, test_book.author, test_book.num_pages],
+    // FOR TESTING: insert test books
+    create_book(
+        &connection,
+        &String::from("Les Miserables"),
+        &String::from("Victor Hugo"),
+        1218,
     )?;
-    println!("Inserted new task: \n'{:?}'", test_book);
+
+    create_book(
+        &connection,
+        &String::from("The Hobbit"),
+        &String::from("J.R.R. Tolkien"),
+        300,
+    )?;
+
+    create_book(
+        &connection,
+        &String::from("Ender's Game"),
+        &String::from("Orson Scott Card"),
+        324,
+    )?;
 
     let mut stmt = connection.prepare("SELECT id, title, author, num_pages FROM books")?;
 

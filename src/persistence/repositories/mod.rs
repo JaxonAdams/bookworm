@@ -1,3 +1,3 @@
-mod books;
+mod bookshelf;
 
-pub use books::{create_book, delete_book, list_all_books};
+pub use bookshelf::{create_book, delete_book, list_all_books};

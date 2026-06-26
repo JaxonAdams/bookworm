@@ -20,3 +20,14 @@ impl std::fmt::Display for DatabaseError {
 }
 
 impl std::error::Error for DatabaseError {}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_book_not_found_display() {
+        let err = DatabaseError::BookNotFound("Dune".to_string());
+        assert_eq!(format!("{}", err), "Book not found: 'Dune'");
+    }
+}

@@ -5,7 +5,7 @@ use std::result::Result;
 use crate::{
     cli::Cli,
     persistence::{bookshelf, tbr},
-    utils::print_tbr_table,
+    utils::{print_books_table, print_tbr_table},
 };
 
 #[derive(Subcommand)]
@@ -79,7 +79,10 @@ pub fn execute_cmd(
 ) -> Result<(), Box<dyn std::error::Error>> {
     match &cli.command {
         TopLevelCommands::Bookshelf { action } => match action {
-            BookshelfCommands::List {} => bookshelf::list_all_books(db_connection)?,
+            BookshelfCommands::List {} => {
+                let books_table = bookshelf::list_all_books(db_connection)?;
+                print_books_table(&books_table);
+            }
             BookshelfCommands::Add {
                 title,
                 author,

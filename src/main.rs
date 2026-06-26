@@ -3,6 +3,7 @@ use rusqlite::Result;
 mod config;
 mod model;
 mod persistence;
+mod utils;
 
 use persistence::{create_book, init_db, list_all_books};
 

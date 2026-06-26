@@ -3,7 +3,7 @@ use rusqlite::Connection;
 pub fn setup_test_db() -> Connection {
     let conn = Connection::open_in_memory().unwrap();
     conn.execute(
-        "CREATE TABLE bookshelf (
+        "CREATE TABLE books (
             id INTEGER PRIMARY KEY,
             title TEXT NOT NULL,
             author TEXT NOT NULL,

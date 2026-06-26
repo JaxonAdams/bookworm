@@ -48,6 +48,9 @@ pub enum BookshelfCommands {
 
 #[derive(Subcommand)]
 pub enum TBRCommands {
+    /// List all books currently in your TBR (to-be-read) list
+    List {},
+
     /// Add a book to your TBR (to-be-read) list
     Add {
         /// The title of the book
@@ -79,6 +82,7 @@ pub fn execute_cmd(
             BookshelfCommands::Remove { title } => bookshelf::delete_book(db_connection, title)?,
         },
         TopLevelCommands::TBR { action } => match action {
+            TBRCommands::List {} => tbr::list_all_in_tbr(db_connection)?,
             TBRCommands::Add {
                 title,
                 author,

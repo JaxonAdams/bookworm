@@ -1,5 +1,7 @@
 use rusqlite::{Connection, Result, params};
 
+use crate::utils::log_debug;
+
 pub fn create_book(
     connection: &Connection,
     title: &String,
@@ -14,7 +16,7 @@ pub fn create_book(
         ",
         params![title, author, num_pages],
     )?;
-    println!("Inserted new book: '{}, by {}'", title, author);
+    log_debug(format!("Inserted new book: '{}, by {}'", title, author).as_str());
 
     Ok(())
 }

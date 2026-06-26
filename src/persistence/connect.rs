@@ -1,17 +1,17 @@
-use crate::config::APP_NAME;
+use crate::{config::APP_NAME, utils::log_debug};
 use rusqlite::{Connection, Result};
 use std::{env, fs, path::PathBuf};
 
 /// Initializes the connection and ensures the tables exist
 pub fn init_db() -> Result<Connection> {
     let db_path = get_db_path();
-    println!("Database path: {:?}", db_path);
+    log_debug(format!("Database path: {:?}", db_path).as_str());
 
     let connection = Connection::open(db_path)?;
 
     set_up_tables(&connection)?;
 
-    println!("Database initialized successfully!");
+    log_debug("Database initialized successfully!");
     Ok(connection)
 }
 
@@ -20,7 +20,7 @@ fn get_db_path() -> PathBuf {
     let storage_file_name = "storage.db";
 
     if env::var("DEV_MODE").is_ok() {
-        println!("Running in Development Mode...");
+        log_debug("Running in Development Mode...");
 
         let dev_dir = PathBuf::from("data");
         fs::create_dir_all(&dev_dir).unwrap();

@@ -9,6 +9,7 @@ pub fn init_db() -> Result<Connection> {
 
     let connection = Connection::open(db_path)?;
 
+    connection.execute("PRAGMA foreign_keys = ON;", [])?;
     set_up_tables(&connection)?;
 
     log_debug("Database initialized successfully!");
@@ -52,5 +53,18 @@ fn set_up_tables(connection: &Connection) -> Result<()> {
         );",
         [],
     )?;
+
+    connection.execute(
+        "CREATE TABLE IF NOT EXISTS tbr (
+            id INTEGER PRIMARY KEY,
+            book_id INTEGER NOT NULL,
+            created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+            FOREIGN KEY (book_id) REFERENCES books (id)
+                ON DELETE CASCADE
+        );",
+        [],
+    )?;
+
     Ok(())
 }

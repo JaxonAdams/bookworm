@@ -6,7 +6,7 @@ pub fn create_book(
     connection: &Connection,
     title: &String,
     author: &String,
-    num_pages: i32,
+    num_pages: &i32,
 ) -> Result<()> {
     connection.execute(
         "INSERT INTO books (title, author, num_pages)

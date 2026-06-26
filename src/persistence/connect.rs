@@ -46,8 +46,10 @@ fn set_up_tables(connection: &Connection) -> Result<()> {
             id        INTEGER PRIMARY KEY,
             title     TEXT NOT NULL,
             author    TEXT NOT NULL,
-            num_pages INTEGER NOT NULL
-        )",
+            num_pages INTEGER NOT NULL CHECK (num_pages > 0),
+
+            CONSTRAINT unique_book_entry UNIQUE (title, author)
+        );",
         [],
     )?;
     Ok(())

@@ -17,7 +17,7 @@ fn main() -> Result<()> {
         id: 1,
         title: String::from("Les Miserables"),
         author: String::from("Victor Hugo"),
-        num_pages: 1200,
+        num_pages: 1218,
     };
 
     let connection = init_db().unwrap();
@@ -25,13 +25,9 @@ fn main() -> Result<()> {
     // FOR TESTING: insert test book
     connection.execute(
         "INSERT INTO books (title, author, num_pages)
-        SELECT ?1, ?2, ?3
-        WHERE NOT EXISTS (
-            SELECT 1 
-            FROM books 
-            WHERE title = ?1
-                AND author = ?2
-        );
+            VALUES (?1, ?2, ?3)
+            ON CONFLICT(title, author)
+            DO UPDATE SET num_pages = excluded.num_pages;
         ",
         params![test_book.title, test_book.author, test_book.num_pages],
     )?;

@@ -19,6 +19,7 @@ pub enum TopLevelCommands {
     },
 }
 
+// TODO: ADD bookshelf show {title} FOR DETAILED VIEW
 #[derive(Subcommand)]
 pub enum BookshelfCommands {
     /// List all books currently tracked by Bookworm
@@ -46,6 +47,7 @@ pub enum BookshelfCommands {
     },
 }
 
+// TODO: ADD TBR REMOVE
 #[derive(Subcommand)]
 pub enum TBRCommands {
     /// List all books currently in your TBR (to-be-read) list
@@ -78,7 +80,7 @@ pub fn execute_cmd(
                 title,
                 author,
                 num_pages,
-            } => bookshelf::add_book(db_connection, title, author, num_pages)?,
+            } => bookshelf::add_book(db_connection, title, author, *num_pages)?,
             BookshelfCommands::Remove { title } => bookshelf::delete_book(db_connection, title)?,
         },
         TopLevelCommands::TBR { action } => match action {
@@ -87,7 +89,7 @@ pub fn execute_cmd(
                 title,
                 author,
                 num_pages,
-            } => tbr::add_book(db_connection, title, author, num_pages)?,
+            } => tbr::add_book(db_connection, title, author, *num_pages)?,
         },
     }
 

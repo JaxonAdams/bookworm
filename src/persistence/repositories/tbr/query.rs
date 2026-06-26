@@ -4,6 +4,7 @@ use crate::{
 };
 use rusqlite::{Connection, Result};
 
+// TODO: break out printing logic; separate concerns
 pub fn list_all_in_tbr(connection: &Connection) -> Result<()> {
     let mut stmt = connection.prepare(
         "SELECT tbr.id, tbr.created_at, b.id, b.title, b.author, b.num_pages 

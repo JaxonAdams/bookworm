@@ -2,6 +2,7 @@ use crate::model::Book;
 use crate::utils::print_books_table;
 use rusqlite::{Connection, Result};
 
+// TODO: break out printing logic; separate concerns
 pub fn list_all_books(connection: &Connection) -> Result<()> {
     let mut stmt = connection.prepare("SELECT id, title, author, num_pages FROM books")?;
 

@@ -15,7 +15,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
     set_verbose(cli.verbose);
 
-    let connection = init_db().unwrap();
+    let connection = init_db()?;
     execute_cmd(&cli, &connection)?;
     Ok(())
 }

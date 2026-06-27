@@ -3,7 +3,7 @@ pub struct Book {
     pub id: i32,
     pub title: String,
     pub author: String,
-    pub num_pages: i32,
+    pub num_pages: Option<i32>,
 }
 
 #[derive(Debug)]

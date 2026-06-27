@@ -9,7 +9,7 @@ pub fn list_all_books(connection: &Connection) -> Result<Vec<Book>> {
             id: row.get(0)?,
             title: row.get(1)?,
             author: row.get(2)?,
-            num_pages: row.get::<_, i32>(3)?,
+            num_pages: row.get::<_, Option<i32>>(3)?,
         })
     })?;
 
@@ -35,6 +35,11 @@ mod tests {
             params!["The Lord of the Rings", "J.R.R. Tolkien", 800],
         )
         .unwrap();
+        conn.execute(
+            "INSERT INTO books (title, author, num_pages) VALUES (?1, ?2, ?3)",
+            params!["Les Miserables", "Victor Hugo", Option::<i32>::None],
+        )
+        .unwrap();
 
         conn
     }
@@ -45,16 +50,21 @@ mod tests {
         let results = list_all_books(&conn).expect("Failed to fetch bookshelf");
 
         // Assert the total count
-        assert_eq!(results.len(), 2);
+        assert_eq!(results.len(), 3);
 
         // Assert specific details of the first entry
         assert_eq!(results[0].title, "Dune");
         assert_eq!(results[0].author, "Frank Herbert");
-        assert_eq!(results[0].num_pages, 412);
+        assert_eq!(results[0].num_pages, Some(412));
 
         // Assert specific details of the second entry
         assert_eq!(results[1].title, "The Lord of the Rings");
         assert_eq!(results[1].author, "J.R.R. Tolkien");
-        assert_eq!(results[1].num_pages, 800);
+        assert_eq!(results[1].num_pages, Some(800));
+
+        // Assert specific details of the third entry
+        assert_eq!(results[2].title, "Les Miserables");
+        assert_eq!(results[2].author, "Victor Hugo");
+        assert_eq!(results[2].num_pages, None);
     }
 }

@@ -29,7 +29,11 @@ pub fn print_books_table(books: &[Book]) {
         let id_cell = Cell::new(&book.id);
         let title_cell = Cell::new(&book.title);
         let author_cell = Cell::new(&book.author);
-        let num_pages_cell = Cell::new(&book.num_pages);
+
+        let num_pages_str = book
+            .num_pages
+            .map_or(String::from("N/A"), |val| val.to_string());
+        let num_pages_cell = Cell::new(num_pages_str);
 
         table.add_row(vec![id_cell, title_cell, author_cell, num_pages_cell]);
     }

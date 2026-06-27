@@ -1,4 +1,4 @@
-use crate::{config::APP_NAME, utils::log_debug};
+use crate::{config::APP_NAME, model::schemas, utils::log_debug};
 use rusqlite::{Connection, Result};
 use std::{env, fs, path::PathBuf};
 
@@ -42,20 +42,11 @@ fn get_db_path() -> PathBuf {
 
 /// Creates the needed tables if they don't exist
 fn set_up_tables(connection: &Connection) -> Result<()> {
-    // TODO: reevaluate schema -- do we really need two tables?
-    // Keeping in mind TBR, progress tracking (currently reading, completed, not started, DNF,
-    // on-pause) and that users may want to re-read a book and add it to TBR when already
-    // completed.
-
     connection.execute(
-        "CREATE TABLE IF NOT EXISTS books (
-            id        INTEGER PRIMARY KEY,
-            title     TEXT NOT NULL,
-            author    TEXT NOT NULL,
-            num_pages INTEGER NOT NULL CHECK (num_pages > 0),
-
-            CONSTRAINT unique_book_entry UNIQUE (title, author)
-        );",
+        &format!(
+            "CREATE TABLE IF NOT EXISTS books ({});",
+            schemas::BOOKS_TABLE_SCHEMA,
+        ),
         [],
     )?;
 

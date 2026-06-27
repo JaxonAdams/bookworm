@@ -1,16 +1,15 @@
 use rusqlite::Connection;
 
+use crate::model::schemas;
+
 pub fn setup_test_db() -> Connection {
     let conn = Connection::open_in_memory().unwrap();
 
     conn.execute(
-        "CREATE TABLE books (
-            id INTEGER PRIMARY KEY,
-            title TEXT NOT NULL,
-            author TEXT NOT NULL,
-            num_pages INTEGER NOT NULL CHECK (num_pages > 0),
-            CONSTRAINT unique_book_entry UNIQUE (title, author)
-        )",
+        &format!(
+            "CREATE TABLE IF NOT EXISTS books ({});",
+            schemas::BOOKS_TABLE_SCHEMA,
+        ),
         [],
     )
     .unwrap();

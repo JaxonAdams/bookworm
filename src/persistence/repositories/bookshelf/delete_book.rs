@@ -4,7 +4,7 @@ use std::result::Result;
 use crate::{persistence::DatabaseError, utils::log_debug};
 
 pub fn delete_book(connection: &Connection, title: &str) -> Result<(), DatabaseError> {
-    log_debug(format!("Deleting book with title: '{}'", title).as_str());
+    log_debug(&format!("Deleting book with title: '{}'", title));
 
     let rows_affected = connection.execute("DELETE FROM books WHERE title = ?1", params![title])?;
 

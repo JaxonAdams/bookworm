@@ -41,7 +41,7 @@ pub enum BookshelfCommands {
 
         /// The number of pages in the book
         #[arg(short, long)]
-        num_pages: i32,
+        num_pages: Option<i32>,
     },
 
     /// Remove a book from your bookshelf
@@ -69,7 +69,7 @@ pub enum TBRCommands {
 
         /// The number of pages in the book
         #[arg(short, long)]
-        num_pages: i32,
+        num_pages: Option<i32>,
     },
 }
 

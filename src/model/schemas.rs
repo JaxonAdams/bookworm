@@ -9,10 +9,11 @@
 // TODO: add 'in_tbr' field (boolean; default false)
 
 pub const BOOKS_TABLE_SCHEMA: &str = "
-    id        INTEGER PRIMARY KEY,
-    title     TEXT NOT NULL, 
-    author    TEXT NOT NULL,
-    num_pages INTEGER CHECK (num_pages IS NULL OR num_pages > 0),
+    id         INTEGER PRIMARY KEY,
+    title      TEXT NOT NULL, 
+    author     TEXT NOT NULL,
+    num_pages  INTEGER CHECK (num_pages IS NULL OR num_pages > 0),
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT unique_book_entry UNIQUE (title, author)
 ";

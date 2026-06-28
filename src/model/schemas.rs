@@ -1,11 +1,5 @@
-// TODO: reevaluate schema -- do we really need two tables?
-// Keeping in mind TBR, progress tracking (currently reading, completed, not started, DNF,
-// on-pause) and that users may want to re-read a book and add it to TBR when already
-// completed.
-
 // TODO: add 'status' field (default 'unread' or similar; include 'in progress', 'completed',
 //      'DNF', 'on pause')
-
 pub const BOOKS_TABLE_SCHEMA: &str = "
     id              INTEGER PRIMARY KEY,
     title           TEXT NOT NULL, 

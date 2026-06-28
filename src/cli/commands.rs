@@ -51,7 +51,7 @@ pub enum BookshelfCommands {
     },
 }
 
-// TODO: ADD TBR REMOVE
+// TODO: ADD TBR REMOVE (separate from completing a book on the TBR)
 #[derive(Subcommand)]
 pub enum TBRCommands {
     /// List all books currently in your TBR (to-be-read) list

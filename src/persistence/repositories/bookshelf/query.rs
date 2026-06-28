@@ -2,7 +2,8 @@ use crate::model::Book;
 use rusqlite::{Connection, Result};
 
 pub fn list_all_books(connection: &Connection) -> Result<Vec<Book>> {
-    let mut stmt = connection.prepare("SELECT id, title, author, num_pages FROM books")?;
+    let mut stmt = connection
+        .prepare("SELECT id, title, author, num_pages, in_tbr, added_to_tbr_at FROM books")?;
 
     let book_iter = stmt.query_map([], |row| {
         Ok(Book {
@@ -10,6 +11,8 @@ pub fn list_all_books(connection: &Connection) -> Result<Vec<Book>> {
             title: row.get(1)?,
             author: row.get(2)?,
             num_pages: row.get::<_, Option<i32>>(3)?,
+            in_tbr: row.get(4)?,
+            added_to_tbr_at: row.get::<_, Option<String>>(5)?,
         })
     })?;
 
@@ -56,15 +59,21 @@ mod tests {
         assert_eq!(results[0].title, "Dune");
         assert_eq!(results[0].author, "Frank Herbert");
         assert_eq!(results[0].num_pages, Some(412));
+        assert_eq!(results[0].in_tbr, false);
+        assert_eq!(results[0].added_to_tbr_at, None);
 
         // Assert specific details of the second entry
         assert_eq!(results[1].title, "The Lord of the Rings");
         assert_eq!(results[1].author, "J.R.R. Tolkien");
         assert_eq!(results[1].num_pages, Some(800));
+        assert_eq!(results[1].in_tbr, false);
+        assert_eq!(results[1].added_to_tbr_at, None);
 
         // Assert specific details of the third entry
         assert_eq!(results[2].title, "Les Miserables");
         assert_eq!(results[2].author, "Victor Hugo");
         assert_eq!(results[2].num_pages, None);
+        assert_eq!(results[2].in_tbr, false);
+        assert_eq!(results[2].added_to_tbr_at, None);
     }
 }

@@ -1,6 +1,5 @@
 use rusqlite::{Connection, Result, params};
 
-use crate::persistence::bookshelf;
 use crate::utils::log_debug;
 
 pub fn add_book(
@@ -9,17 +8,21 @@ pub fn add_book(
     author: &str,
     num_pages: Option<i32>,
 ) -> Result<()> {
-    // First make sure the book exists on the bookshelf
-    bookshelf::add_book(connection, title, author, num_pages)?;
-
     // Add the book to the TBR list
     connection.execute(
-        "INSERT INTO tbr (book_id)
-         SELECT id FROM books WHERE title = ?1 AND author = ?2;
-        ",
-        params![title, author],
+        "INSERT INTO books (title, author, num_pages, in_tbr, added_to_tbr_at)
+         VALUES (?1, ?2, ?3, 1, CURRENT_TIMESTAMP)
+         ON CONFLICT(title, author)
+         DO UPDATE SET 
+            num_pages = excluded.num_pages,
+            added_to_tbr_at = CASE 
+                WHEN books.in_tbr = 0 THEN excluded.added_to_tbr_at 
+                ELSE books.added_to_tbr_at 
+            END,
+            in_tbr = excluded.in_tbr;",
+        params![title, author, num_pages],
     )?;
-    log_debug(&format!("Inserted new book: '{}, by {}'", title, author));
+    log_debug(&format!("Book now in user TBR: '{}, by {}'", title, author));
 
     Ok(())
 }

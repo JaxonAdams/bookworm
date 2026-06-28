@@ -1,4 +1,4 @@
-use crate::model::{Book, TBREntry};
+use crate::model::Book;
 use comfy_table::modifiers::UTF8_ROUND_CORNERS;
 use comfy_table::presets::UTF8_FULL;
 use comfy_table::{Attribute, Cell, Color, Row, Table};
@@ -41,7 +41,7 @@ pub fn print_books_table(books: &[Book]) {
     println!("\n{}", table);
 }
 
-pub fn print_tbr_table(tbr: &[TBREntry]) {
+pub fn print_tbr_table(tbr: &[Book]) {
     let mut table = Table::new();
 
     table
@@ -55,17 +55,23 @@ pub fn print_tbr_table(tbr: &[TBREntry]) {
         Cell::new("Title")
             .add_attribute(Attribute::Bold)
             .fg(Color::Cyan),
-        Cell::new("Created At")
+        Cell::new("Added to TBR At")
             .add_attribute(Attribute::Bold)
             .fg(Color::Cyan),
     ]));
 
     for entry in tbr {
-        let id_cell = Cell::new(&entry.id);
-        let title_cell = Cell::new(&entry.book.title);
-        let created_at_cell = Cell::new(&entry.created_at);
+        if !entry.in_tbr {
+            continue;
+        };
 
-        table.add_row(vec![id_cell, title_cell, created_at_cell]);
+        let id_cell = Cell::new(&entry.id);
+        let title_cell = Cell::new(&entry.title);
+
+        let added_to_tbr_at_str = entry.added_to_tbr_at.as_deref().unwrap_or("N/A");
+        let added_to_tbr_at_cell = Cell::new(added_to_tbr_at_str);
+
+        table.add_row(vec![id_cell, title_cell, added_to_tbr_at_cell]);
     }
 
     println!("\n{}", table);

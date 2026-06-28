@@ -4,11 +4,6 @@ pub struct Book {
     pub title: String,
     pub author: String,
     pub num_pages: Option<i32>,
-}
-
-#[derive(Debug)]
-pub struct TBREntry {
-    pub id: i32,
-    pub created_at: String,
-    pub book: Book,
+    pub in_tbr: bool,
+    pub added_to_tbr_at: Option<String>,
 }

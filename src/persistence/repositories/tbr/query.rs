@@ -1,27 +1,25 @@
-use crate::model::{Book, TBREntry};
+use crate::model::Book;
 use rusqlite::{Connection, Result};
 
-pub fn list_all_in_tbr(connection: &Connection) -> Result<Vec<TBREntry>> {
+pub fn list_all_in_tbr(connection: &Connection) -> Result<Vec<Book>> {
     let mut stmt = connection.prepare(
-        "SELECT tbr.id, tbr.created_at, b.id, b.title, b.author, b.num_pages 
-         FROM tbr
-         LEFT JOIN books b ON b.id = tbr.book_id",
+        "SELECT id, title, author, num_pages, in_tbr, added_to_tbr_at
+         FROM books
+         WHERE in_tbr = 1;",
     )?;
 
     let tbr_iter = stmt.query_map([], |row| {
-        Ok(TBREntry {
+        Ok(Book {
             id: row.get(0)?,
-            created_at: row.get(1)?,
-            book: Book {
-                id: row.get(2)?,
-                title: row.get(3)?,
-                author: row.get(4)?,
-                num_pages: row.get::<_, Option<i32>>(5)?,
-            },
+            title: row.get(1)?,
+            author: row.get(2)?,
+            num_pages: row.get::<_, Option<i32>>(3)?,
+            in_tbr: row.get(4)?,
+            added_to_tbr_at: row.get::<_, Option<String>>(5)?,
         })
     })?;
 
-    let tbr: Vec<TBREntry> = tbr_iter.collect::<Result<Vec<_>, _>>()?;
+    let tbr: Vec<Book> = tbr_iter.collect::<Result<Vec<_>, _>>()?;
     Ok(tbr)
 }
 
@@ -34,39 +32,23 @@ mod tests {
     fn seed_tbr() -> Connection {
         let conn = setup_test_db();
         conn.execute(
-            "INSERT INTO books (title, author, num_pages) VALUES (?1, ?2, ?3)",
+            "INSERT INTO books (title, author, num_pages, in_tbr, added_to_tbr_at) 
+             VALUES (?1, ?2, ?3, 1, CURRENT_TIMESTAMP)",
             params!["Dune", "Frank Herbert", 412],
         )
         .unwrap();
         conn.execute(
-            "INSERT INTO books (title, author, num_pages) VALUES (?1, ?2, ?3)",
-            params!["The Lord of the Rings", "J.R.R. Tolkien", 800],
-        )
-        .unwrap();
-        conn.execute(
-            "INSERT INTO books (title, author, num_pages) VALUES (?1, ?2, ?3)",
+            "INSERT INTO books (title, author, num_pages, in_tbr, added_to_tbr_at) 
+             VALUES (?1, ?2, ?3, 1, CURRENT_TIMESTAMP)",
             params!["Les Miserables", "Victor Hugo", Option::<i32>::None],
         )
         .unwrap();
+
+        // NOTE: NOT IN TBR! Just a book.
         conn.execute(
-            "INSERT INTO tbr (book_id)
-         SELECT id FROM books WHERE title = ?1 AND author = ?2;
-        ",
-            params!["Dune", "Frank Herbert"],
-        )
-        .unwrap();
-        conn.execute(
-            "INSERT INTO tbr (book_id)
-         SELECT id FROM books WHERE title = ?1 AND author = ?2;
-        ",
-            params!["The Lord of the Rings", "J.R.R. Tolkien"],
-        )
-        .unwrap();
-        conn.execute(
-            "INSERT INTO tbr (book_id)
-         SELECT id FROM books WHERE title = ?1 AND author = ?2;
-        ",
-            params!["Les Miserables", "Victor Hugo"],
+            "INSERT INTO books (title, author, num_pages) 
+             VALUES (?1, ?2, ?3)",
+            params!["Moby Dick", "Herman Melville", Option::<i32>::None],
         )
         .unwrap();
 
@@ -79,21 +61,16 @@ mod tests {
         let results = list_all_in_tbr(&conn).expect("Failed to fetch TBR list");
 
         // Assert the total count
-        assert_eq!(results.len(), 3);
+        assert_eq!(results.len(), 2);
 
         // Assert specific details of the first entry
-        assert_eq!(results[0].book.title, "Dune");
-        assert_eq!(results[0].book.author, "Frank Herbert");
-        assert_eq!(results[0].book.num_pages, Some(412));
+        assert_eq!(results[0].title, "Dune");
+        assert_eq!(results[0].author, "Frank Herbert");
+        assert_eq!(results[0].num_pages, Some(412));
 
         // Assert specific details of the second entry
-        assert_eq!(results[1].book.title, "The Lord of the Rings");
-        assert_eq!(results[1].book.author, "J.R.R. Tolkien");
-        assert_eq!(results[1].book.num_pages, Some(800));
-
-        // Assert specific details of the second entry
-        assert_eq!(results[2].book.title, "Les Miserables");
-        assert_eq!(results[2].book.author, "Victor Hugo");
-        assert_eq!(results[2].book.num_pages, None);
+        assert_eq!(results[1].title, "Les Miserables");
+        assert_eq!(results[1].author, "Victor Hugo");
+        assert_eq!(results[1].num_pages, None);
     }
 }

@@ -1,4 +1,5 @@
 mod add_book;
+mod delete_book;
 mod query;
 
 pub use add_book::add_book;

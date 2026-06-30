@@ -1,5 +1,7 @@
 // TODO: add 'status' field (default 'unread' or similar; include 'in progress', 'completed',
 //      'DNF', 'on pause')
+//
+// TODO: timestamps in local time
 pub const BOOKS_TABLE_SCHEMA: &str = "
     id              INTEGER PRIMARY KEY,
     title           TEXT NOT NULL, 

@@ -71,6 +71,12 @@ pub enum TBRCommands {
         #[arg(short, long)]
         num_pages: Option<i32>,
     },
+
+    /// Remove a book you're not interested in reading from your TBR
+    Remove {
+        /// The title of the book
+        title: String,
+    },
 }
 
 pub fn execute_cmd(
@@ -100,6 +106,7 @@ pub fn execute_cmd(
                 author,
                 num_pages,
             } => tbr::add_book(db_connection, title, author, *num_pages)?,
+            TBRCommands::Remove { title } => tbr::delete_book(db_connection, title)?,
         },
     }
 

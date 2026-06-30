@@ -1,4 +1,5 @@
 use crate::model::Book;
+use crate::utils::format_utc_as_local;
 use comfy_table::modifiers::UTF8_ROUND_CORNERS;
 use comfy_table::presets::UTF8_FULL;
 use comfy_table::{Attribute, Cell, Color, Row, Table};
@@ -68,7 +69,11 @@ pub fn print_tbr_table(tbr: &[Book]) {
         let id_cell = Cell::new(&entry.id);
         let title_cell = Cell::new(&entry.title);
 
-        let added_to_tbr_at_str = entry.added_to_tbr_at.as_deref().unwrap_or("N/A");
+        let added_to_tbr_at_str = entry
+            .added_to_tbr_at
+            .as_deref()
+            .map(format_utc_as_local)
+            .unwrap_or_else(|| "N/A".to_string());
         let added_to_tbr_at_cell = Cell::new(added_to_tbr_at_str);
 
         table.add_row(vec![id_cell, title_cell, added_to_tbr_at_cell]);
